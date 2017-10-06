@@ -1,4 +1,4 @@
-#!/usr/local/bin/python3
+#!/usr/local/bin/python
 # -*- coding: utf-8 -*-
 
 #https://github.com/liris/websocket-client
