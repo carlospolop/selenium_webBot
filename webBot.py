@@ -1,5 +1,29 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
+# Copyright (c) 2017, Carlos Polop Martin <carlospolop[at]gmail.com
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without modification, are permitted
+# provided that the following conditions are met:
+#
+# Redistributions of source code must retain the above copyright notice, this list of conditions and
+# the following disclaimer.
+#
+# Redistributions in binary form must reproduce the above copyright notice, this list of conditions
+# and the following disclaimer in the documentation and/or other materials provided with the
+# distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
+# IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+# FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+# CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
+# IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+# OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
 #gckodriver esta copiado en /usr/local/bin
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -72,12 +96,12 @@ def elem_write(element, text):
         element.send_keys(letter)
 
  #Le damos la primera acción a ejecutar para que compruebe si ha cargado bien la pagina
-def checkLoadBrowser(): 
+def checkLoadBrowser():
     global browser
     my_sleep(20)
     browser.execute_script('document.getElementsByTagName("button")[4].click()')
 
-    try: 
+    try:
         my_sleep(1)
         sign_up_box = browser.find_element_by_class_name("login-mail")
         ActionChains(browser).move_to_element(sign_up_box).click(sign_up_box).perform()
@@ -88,7 +112,7 @@ def checkLoadBrowser():
         sign_up_box = browser.find_element_by_class_name("login-mail")
         ActionChains(browser).move_to_element(sign_up_box).click(sign_up_box).perform()
 
-    
+
 
 def sign_in(mail, passw, name, last_name):
     global browser
@@ -97,11 +121,11 @@ def sign_in(mail, passw, name, last_name):
     #que la pagina se ha cargado correctamente
 
     my_sleep(1)
-    name_box = browser.find_element_by_name("firstname") 
+    name_box = browser.find_element_by_name("firstname")
     elem_write(name_box, name)
 
     my_sleep(1)
-    last_name_box = browser.find_element_by_name("lastname") 
+    last_name_box = browser.find_element_by_name("lastname")
     elem_write(last_name_box, last_name)
 
     my_sleep(1)
@@ -121,7 +145,7 @@ def getRandLine(path):
         for line in f:
             array.append(line)
     return array[int( round( random.random()*(len(array)-1) ) )]
-        
+
 
 
 #Obtiene una contraseña random:mayus, minus y nº
@@ -145,11 +169,11 @@ def fin_reg(url_confirm, proxy):
 
     my_sleep(5)
     browser.execute_script('document.getElementById("formRegisterConfirmBirthday").value = "'+str(int(round(random.random()*12)))+'/'+str(int(round(random.random()*12)))+'/199'+str(int(round(random.random()*9)))+'"')
-    
+
     my_sleep(1)
     select = Select(browser.find_element_by_id('formRegisterConfirmGender'))
     select.select_by_visible_text('Male')
-    
+
     my_sleep(1)
     browser.execute_script('document.getElementsByClassName("btn-send-login")[0].removeAttribute("disabled")')
     browser.execute_script('document.getElementsByClassName("btn-send-login")[0].click()')
@@ -163,9 +187,9 @@ def getConfirmUrl(msg_confirm):
 
 #Recibe el mail de confirmación, si no lo recibe en 20seg pulsa el boton de reenviar y espera otros 20 seg
 def getConfirmMail(mb):
-    try: 
+    try:
         with timeout(seconds=20):
-            msg_confirm = mb.getCorreo() 
+            msg_confirm = mb.getCorreo()
             return getConfirmUrl(msg_confirm)
     except:
         resend_mail()
@@ -195,12 +219,12 @@ def logic(usernames_path, last_names_path, new_users_path):
                     browser.close()
                 else:
                     try: #Miramos a ver si se ha cargado correctamente la página o sino probamos el siguiente proxy
-                        checkLoadBrowser() 
+                        checkLoadBrowser()
                         break
                     except:
                         print "Ha fallado checkLoadBrowser()"
                         browser.close()
-                        
+
         mb = mailbox()
         mail = mb.getMailAdd() #Obtenemos una dirección de 10minmail
         while "10mail" in mail: #No queremos que la dirección de mail contenga dicho string
@@ -208,14 +232,14 @@ def logic(usernames_path, last_names_path, new_users_path):
             mb = mailbox()
             mail = mb.getMailAdd()
         print mail
-        
+
         passw = getPass() #Obtenemos una apass random
         print passw
-        
+
         username = getRandLine(usernames_path)
         last_name = getRandLine(last_names_path)
         sign_in(mail, passw, username, last_name) #Realizamos el registro
-        
+
         url_confirm = getConfirmMail(mb) #Epseramos a obtener en el correo el mensaje de confirmacion
 
         my_sleep(5)
@@ -266,6 +290,3 @@ def main(argv):
 
 if __name__ == "__main__":
    main(sys.argv[1:])
-
-
-
